@@ -1,0 +1,4 @@
+aliyun-python-sdk-alidns==2.6.18
+aliyun-python-sdk-core==2.13.25
+aliyun-python-sdk-domain==3.14.3
+requests==2.24.0
