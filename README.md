@@ -2,6 +2,7 @@
 通过调用云解析DNS提供的接口，动态更新A记录到当前本地公网ip地址<br>
 ***
 ## 注意事项
+***
 1.域名已经使用阿里云 云解析DNS<br>
 2.程序一旦执行完成将会立即更新所设置域名的A记录，测试程序请使用测试用域名<br>
 3.程序我个人代码部分完全开源,可以作为商业用途。~~没人会用于商业用途的吧~~ 所调用的第三方包请参照相关许可
@@ -15,6 +16,10 @@ apt install python3 & apt install python3-pip
 centos: 
 ```
 yum install python3 & yum install python3-pip
+```
+### 安装程序所需环境
+```
+pip3 install -r requirements.txt
 ```
 
 ### 程序使用方法
@@ -50,5 +55,4 @@ python3 main.py
 ~~~
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 linux下如需长期运行，可使用类似screen保持运行状态。
-
 
