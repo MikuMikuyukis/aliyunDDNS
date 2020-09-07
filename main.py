@@ -30,7 +30,7 @@ def read_json_settings():
 def network_test():
     # 网络测试
     while True:
-        ping_test = os.system("ping {} -n 1".format(settings["networkTestAddr"]))
+        ping_test = os.system("ping {} -c1".format(settings["networkTestAddr"]))
         if ping_test == 0:
             return True
 
