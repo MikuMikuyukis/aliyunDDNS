@@ -10,27 +10,32 @@ import json
 import requests
 import time
 import os
+import platform
 
 settings = {}
 
 
 def read_json_settings():
-    # 读取配置文件
     global settings
-    for i in range(3):
-        try:
-            with open("./settings.json", "r") as file_data:
-                data = file_data.read()
-                settings = eval(data)
-                return
-        except Exception as e:
-            print(e)
+    try:
+        with open("./settings.json", "r") as file_data:
+            data = file_data.read()
+            settings = eval(data)
+            System_mod = platform.system()
+            if System_mod != "Windows" and System_mod != "Linux":
+                print("不受支持的系统")
+                exit()
+            settings["system_mod"] = System_mod
+    except Exception as e:
+        print(e)
 
 
 def network_test():
-    # 网络测试
     while True:
-        ping_test = os.system("ping {} -c1".format(settings["networkTestAddr"]))
+        if settings["system_mod"] == "Windows":
+            ping_test = os.system("ping {} -n 1".format(settings["networkTestAddr"]))
+        if settings["system_mod"] == "Linux":
+            ping_test = os.system("ping {} -c1".format(settings["networkTestAddr"]))
         if ping_test == 0:
             return True
 
@@ -39,19 +44,20 @@ def network_test():
 
 
 def update_domain_name_value(RecordId, ip):
-    # 更新域名解析记录
     while True:
         try:
             client = AcsClient(settings["accessKeyId"], settings["accessSecret"], 'cn-hangzhou')
             request = UpdateDomainRecordRequest()
+
             request.set_accept_format('json')
             request.set_RecordId(RecordId)
             request.set_RR(settings["secondary_domain"])
             request.set_Type("A")
             request.set_Value(ip)
+
             response = client.do_action_with_exception(request)
             print(str(response, encoding='utf-8'))
-            print("************updateOK************")
+            print("************更新完成************")
             return
         except Exception as e:
             print(e)
@@ -59,7 +65,6 @@ def update_domain_name_value(RecordId, ip):
 
 
 def get_domain_name_list():
-    # 获取域名列表、RecordID
     while True:
         try:
             client = AcsClient(settings["accessKeyId"], settings["accessSecret"], 'cn-hangzhou')
@@ -79,7 +84,6 @@ def get_domain_name_list():
 
 
 def get_ip_addr():
-    # 获取公网ip地址
     try:
         ip = requests.get("http://ip.42.pl/raw")
         return ip.text
@@ -88,7 +92,6 @@ def get_ip_addr():
 
 
 def run():
-    # 执行
     read_json_settings()
     while True:
         if network_test():
@@ -97,7 +100,6 @@ def run():
             current_ip = inquire[1]
             RecordId = inquire[0]
             if current_ip != update_ip:
-                current_ip = update_ip
                 update_domain_name_value(RecordId=RecordId, ip=update_ip)
             time.sleep(settings["sleep_time"])
 
