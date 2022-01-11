@@ -4,12 +4,14 @@
 import json
 import logging
 import time
+import threading
 
 import requests
 from aliyunsdkalidns.request.v20150109.AddDomainRecordRequest import AddDomainRecordRequest
 from aliyunsdkalidns.request.v20150109.DescribeDomainRecordsRequest import DescribeDomainRecordsRequest
 from aliyunsdkalidns.request.v20150109.UpdateDomainRecordRequest import UpdateDomainRecordRequest
 from aliyunsdkcore.client import AcsClient
+from health import run_health_server
 
 settings = {}
 
@@ -95,4 +97,7 @@ def run():
 
 
 if __name__ == '__main__':
+    # health
+    threading.Thread(target=run_health_server, name="health").start()
+    # ddns
     run()
